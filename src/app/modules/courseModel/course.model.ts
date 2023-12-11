@@ -13,7 +13,11 @@ const detailsSchema = new Schema<TDetails>({
 const coureSchema = new Schema<TCourse>({
   title: { type: String, required: true, unique: true },
   instructor: { type: String, required: true },
-  categoryId: { type: Schema.Types.ObjectId, required: true, ref: "category" },
+  categoryId: {
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: "Category",
+  },
   price: { type: Number, required: true },
   tags: { type: [tagSchema], required: true },
   startDate: { type: String, required: true },
