@@ -1,14 +1,19 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { categoryService } from "./category.service";
+import categoryValidationSchema from "./category.validation";
 
-const createCategory = async (req: Request, res: Response) => {
+const createCategory = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const category = req.body;
 
     // validation using zod
-    //   const zodParserData = userValidationSchema.parse(user);
+    const zodParserData = categoryValidationSchema.parse(category);
 
-    const result = await categoryService.createCategoryIntoDb(category);
+    const result = await categoryService.createCategoryIntoDb(zodParserData);
 
     res.status(200).json({
       success: true,
@@ -16,14 +21,7 @@ const createCategory = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err: any) {
-    res.status(500).json({
-      success: false,
-      message: err.message || "user not found",
-      error: {
-        code: 404,
-        description: "User not found!",
-      },
-    });
+    next(err);
   }
 };
 export const CategoryController = {
