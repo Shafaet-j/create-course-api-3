@@ -1,5 +1,6 @@
 import { Schema, Types, model } from "mongoose";
 import { TCourse, TDetails, TTags } from "./course.interface";
+import httpStatus from "http-status";
 
 const tagSchema = new Schema<TTags>({
   name: { type: String, required: true },
@@ -26,6 +27,14 @@ const coureSchema = new Schema<TCourse>({
   provider: { type: String, required: true },
   durationInWeeks: { type: Number, required: true },
   details: { type: detailsSchema, required: true },
+});
+
+coureSchema.pre("save", async function (next) {
+  const isCourseExist = await Course.findOne({ title: this.title });
+  if (isCourseExist) {
+    throw new Error("This course already exist");
+  }
+  next();
 });
 
 export const Course = model<TCourse>("Course", coureSchema);

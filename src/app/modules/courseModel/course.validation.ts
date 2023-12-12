@@ -12,6 +12,7 @@ const detailsValidationSchema = z.object({
 const courseValidationSchema = z.object({
   title: z.string().min(1),
   instructor: z.string().min(1),
+  // categoryId:z.o
   price: z.number(),
   tags: z.array(tagValidationSchema),
   startDate: z.string(),
