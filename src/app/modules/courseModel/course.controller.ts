@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { CourseService } from "./course.service";
+import sendResponse from "../../utils/sendResponds";
+import httpStatus from "http-status";
 
 const createCourse = async (
   req: Request,
@@ -10,20 +12,13 @@ const createCourse = async (
     const course = req.body;
 
     const result = await CourseService.createCourseIntoDb(course);
-    res.status(200).json({
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
       success: true,
-      message: "Course created successfully",
+      message: "Course created succesfully",
       data: result,
     });
   } catch (err: any) {
-    // res.status(500).json({
-    //   success: false,
-    //   message: err.message || "course not found",
-    //   error: {
-    //     code: 404,
-    //     description: "course not found!",
-    //   },
-    // });
     next(err);
   }
 };
