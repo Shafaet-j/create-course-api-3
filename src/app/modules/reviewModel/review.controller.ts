@@ -30,6 +30,7 @@ const createReview = CatchAsyncError(async (req: Request, res: Response) => {
   const result = await ReviewService.createReviewIntoDb(review);
   res.status(200).json({
     success: true,
+    statusCode: 201,
     message: "Review created successfully",
     data: result,
   });

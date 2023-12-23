@@ -15,7 +15,7 @@ app.use(cors());
 app.use("/", router);
 
 app.get("/", (req: Request, res: Response) => {
-  res.send("Im shafaet hossen");
+  res.send("Im shafaet hossens");
 });
 
 app.use(globalErrorHandler);

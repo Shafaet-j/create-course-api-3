@@ -39,7 +39,7 @@ const getSingleCourse = CatchAsyncError(
     );
     const reviews = await ReviewService.getReviewByCourseID(courseId);
     sendResponse(res, {
-      statusCode: httpStatus.OK,
+      statusCode: 200,
       success: true,
       message: "Course and Reviews retrieved successfully",
       data: { course, reviews },
