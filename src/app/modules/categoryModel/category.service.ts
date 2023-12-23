@@ -7,6 +7,13 @@ const createCategoryIntoDb = async (categoryData: TCategory) => {
   const result = await category.save();
   return result;
 };
+
+const getAllCategoryFromDb = async () => {
+  const result = await Category.find();
+  return result;
+};
+
 export const categoryService = {
   createCategoryIntoDb,
+  getAllCategoryFromDb,
 };

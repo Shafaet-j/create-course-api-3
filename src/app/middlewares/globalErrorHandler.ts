@@ -1,6 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import { ZodError } from "zod";
 import config from "../config";
+import handleValidationError from "../errors/handleValidationError";
+import handleCastError from "../errors/handleCastError";
+import handleDuplicateError from "../errors/handleDuplicateError";
+import handleZodError from "../errors/handleZodError";
+import { ZodError } from "zod";
 
 const globalErrorHandler = (
   err: any,
@@ -15,38 +19,48 @@ const globalErrorHandler = (
     path: string | number;
     message: string;
   }[];
-  const errorSource: TErrorSource = [
+  let errorMessage =
+    err?.errorMessage ||
+    "Something went wrong in te server when validation or Retrieve!";
+  let errorDetails: unknown = [
     {
       path: "",
-      message: "somethisn went wrong",
+      message: "Something went wrong!",
     },
   ];
 
-  const handleZodError = (err: ZodError) => {
-    const errorSources = err.issues.map((issue) => {
-      return {
-        path: issue.path[issue.path.length - 1],
-        message: issue.message,
-      };
-    });
-    statusCode = 400;
-    return {
-      statusCode,
-      message: "zod validation Error",
-    };
-  };
-
   if (err instanceof ZodError) {
-    const simplifiedError = handleZodError(err);
-    statusCode = simplifiedError?.statusCode;
-    message = simplifiedError.message;
+    const simpleError = handleZodError(err);
+    statusCode = simpleError.statusCode;
+    message = simpleError.message;
+    errorMessage = simpleError.errorMessage;
+    errorDetails = simpleError?.errorDetails;
+  } else if (err?.name === "CastError") {
+    const simpleError = handleCastError(err);
+    statusCode = simpleError?.statusCode;
+    message = simpleError?.message;
+    errorMessage = simpleError.errorMessage;
+    errorDetails = simpleError?.errorDetails;
+  } else if (err?.name === "ValidationError") {
+    const simpleError = handleValidationError(err);
+    statusCode = simpleError.statusCode;
+    message = simpleError.message;
+    errorMessage = simpleError.errorMessage;
+    errorDetails = simpleError.errorDetails;
+  } else if (err?.code === 11000) {
+    const simpleError = handleDuplicateError(err);
+    statusCode = simpleError?.statusCode;
+    message = simpleError?.message;
+    errorMessage = simpleError.errorMessage;
+    errorDetails = simpleError?.errorDetails;
   }
 
   return res.status(statusCode).json({
     success: false,
     message,
-    errorSource,
-    stack: config.node_env === "development" ? err?.stack : null,
+    errorMessage,
+    errorDetails,
+    stack: err?.stack,
   });
 };
 
