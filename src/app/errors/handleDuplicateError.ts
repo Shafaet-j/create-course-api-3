@@ -3,7 +3,7 @@ const handleDuplicateError = (err: { message: string }) => {
 
   const extractedId = match && match[1];
 
-  const errorMessage = `${extractedId}  is not a valid ID!`;
+  const errorMessage = `${extractedId}  is already exist`;
 
   const statusCode = 400;
 

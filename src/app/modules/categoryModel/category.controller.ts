@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { categoryService } from "./category.service";
-import categoryValidationSchema from "./category.validation";
-import httpStatus from "http-status";
+
 import { CatchAsyncError } from "../../utils/CatchAsyncError";
 import sendResponse from "../../utils/sendResponds";
 
@@ -27,7 +26,7 @@ const getAllCategory = async (
     const result = await categoryService.getAllCategoryFromDb();
 
     res.status(200).json({
-      statusCode: httpStatus.OK,
+      statusCode: 200,
       success: true,
       message: " Categories retrieved successfully",
       data: result,
